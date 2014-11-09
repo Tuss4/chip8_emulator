@@ -1,6 +1,6 @@
 // Referencing:
 // http://en.wikipedia.org/wiki/CHIP-8
-// http://devernay.free.fr/hacks/chip8/C8TECH10.HTM#2.2
+// http://devernay.free.fr/hacks/chip8/C8TECH10.HTM
 // http://www.multigesture.net/articles/how-to-write-an-emulator-chip-8-interpreter/
 
 package main
@@ -12,6 +12,9 @@ import (
 var memory [0x1000]uint8 // Represents the vm's 4kb of RAM
 var register [0x10]uint8
 var stack [0x10]uint16 // The 16 16 bit stack
+var I uint16
+var PC uint16
+var sp uint8
 
 func main() {
 	for _, b := range memory {
