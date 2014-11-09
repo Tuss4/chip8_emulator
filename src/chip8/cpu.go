@@ -10,11 +10,15 @@ import (
 )
 
 var memory [0x1000]uint8 // Represents the vm's 4kb of RAM
-var register [0x10]uint8
-var stack [0x10]uint16 // The 16 16 bit stack
+var register [0x10]uint8 // The registers
+var stack [0x10]uint16   // The 16x2byte stack
 var I uint16
 var PC uint16
 var sp uint8
+
+func op_8xy2(op_code uint16) {
+	return nil
+}
 
 func main() {
 	for _, b := range memory {
