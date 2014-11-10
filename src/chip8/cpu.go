@@ -16,17 +16,21 @@ var I uint16
 var PC uint16
 var sp uint8
 
-func op_8xy2(op_code uint16, register *[0x10]uint8) {
+// Op_ocodes w/ the highest bits of 0x8
+func Op_8xy2(op_code uint16, register *[0x10]uint8) {
 	x := (op_code >> 8) & 0xF
 	y := (op_code >> 4) & 0xF
 	register[x] = register[x] & register[y]
-	if register[x] == 0 {
-		fmt.Println("Booyah")
-	} else {
-		fmt.Println("Meh")
-	}
+}
+
+func Op_8xy3(op_code uint16, register *[0x10]uint8) {
+	x := (op_code >> 8) & 0xF
+	y := (op_code >> 4) & 0xF
+	register[x] = register[x] ^ register[y]
 }
 
 func main() {
-	op_8xy2(0x8b02, &register)
+	Op_8xy2(0x8b02, &register)
+	Op_8xy3(0x8d13, &register)
+	fmt.Println(register)
 }
