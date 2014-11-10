@@ -16,19 +16,17 @@ var I uint16
 var PC uint16
 var sp uint8
 
-func op_8xy2(op_code uint16) {
-	return nil
+func op_8xy2(op_code uint16, register *[0x10]uint8) {
+	x := (op_code >> 8) & 0xF
+	y := (op_code >> 4) & 0xF
+	register[x] = register[x] & register[y]
+	if register[x] == 0 {
+		fmt.Println("Booyah")
+	} else {
+		fmt.Println("Meh")
+	}
 }
 
 func main() {
-	for _, b := range memory {
-		fmt.Printf("%b", b)
-	}
-	fmt.Println(len(memory))
-	fmt.Println(memory[0x200])
-	fmt.Println(stack)
-	test := 0x6c3f
-	fmt.Printf("%b\n", test)
-	test_2 := test << 4
-	fmt.Printf("%b\n", test_2)
+	op_8xy2(0x8b02, &register)
 }
