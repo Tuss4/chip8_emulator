@@ -73,16 +73,12 @@ func Op_8xy5(op_code uint16, register *[0x10]uint8) {
 
 func Op_8xy6(op_code uint16, register *[0x10]uint8) {
 	x := (op_code >> 8) & 0xF
-	/*
-		VF = Vx & 0x1
-		Vx = Vx >> 0x1
-	*/
-	register[x] = register[x] >> 1
 	if register[x]&0x1 == 1 {
 		register[0xF] = 1
 	} else {
 		register[0xF] = 0
 	}
+	register[x] = register[x] >> 1
 }
 
 func main() {
