@@ -17,6 +17,31 @@ var sp uint8
 // To look at the highest bit >> 12
 // To look at the lowest bit & 0xf
 
+// Op_codes w/ the highest bits == 0x0
+func Op_00E0() {
+	// TODO: set up gfx then clear them with this function
+	return nil
+}
+
+func Op_00EE(op_code uint16, pc *uint16, stack *[0x10]uint16, sp *uint8) {
+	pc = stack[sp]
+	sp--
+}
+
+// Op_code w/ the highest bits == 0x1
+func Op_1nnn(op_code uint16, pc *uint16) {
+	nnn := op_code & 0xfff
+	pc = nnn
+}
+
+// Op_code w/ the highest bits == 0x2
+func Op_2nnn(op_code uint16, pc *uint16, sp *uint8, stack *[0x10]uint8) {
+	nnn := op_code & 0xfff
+	sp++
+	stack[sp] = pc
+	pc = nnn
+}
+
 // Op_code w/ the highest bits == 0x3
 func Op_3xkk(op_code uint16, pc *uint16, register *[0x10]uint8) {
 	x := (op_code >> 8) & 0xf
