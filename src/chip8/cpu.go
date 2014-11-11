@@ -17,6 +17,22 @@ var sp uint8
 // To look at the highest bit >> 12
 // To look at the lowest bit & 0xf
 
+// Op_code w/ the highest bits == 0x5
+func Op_5xy0(op_code uint16, pc *uint16) {
+	x := (op_code >> 8) & 0xf
+	y := (op_code >> 4) & 0xf
+	if register[x] == register[y] {
+		pc += uint16(2)
+	}
+}
+
+// Op_code w/ the highest bits == 0x6
+func Op_6xkk(op_code uint16, register *[0x10]uint8) {
+	x := (op_code >> 8) & 0xf
+	kk := op_code & 0xff
+	register[x] = kk
+}
+
 // Op_code w/ the highest bits == 0x7
 func Op_7xkk(op_code uint16, register *[0x10]uint8) {
 	x := (op_code >> 8) & 0xf
@@ -79,6 +95,36 @@ func Op_8xy6(op_code uint16, register *[0x10]uint8) {
 		register[0xF] = 0
 	}
 	register[x] = register[x] >> 1
+}
+
+func Op_8xy7(op_code uint16, register *[0x10]uint8) {
+	x := (op_code >> 8) & 0xF
+	y := (op_code >> 4) & 0xF
+	if register[y] > register[x] {
+		register[0xF] = 1
+	} else {
+		register[0xF] = 0
+	}
+	register[x] = register[y] - register[x]
+}
+
+func Op_8xyE(op_code uint16, register *[0x10]uint8) {
+	x := (op_code >> 8) & 0xF
+	if register[x]&0x8 == 1 {
+		register[0xF] = 1
+	} else {
+		register[0xF] = 0
+	}
+	register[x] = register[x] << 1
+}
+
+// Op_code w/ the highest bits == 0x9
+func Op_9xy0(op_code uint16, pc *uint16) {
+	x := (op_code >> 8) & 0xF
+	y := (op_code >> 4) & 0xF
+	if register[x] != register[y] {
+		pc += uint16(2)
+	}
 }
 
 func main() {
