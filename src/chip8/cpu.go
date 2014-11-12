@@ -5,7 +5,10 @@
 
 package main
 
-import "fmt"
+import (
+	"fmt"
+	"math/rand"
+)
 
 var memory [0x1000]uint8 // Represents the vm's 4kb of RAM
 var register [0x10]uint8 // The registers
@@ -168,6 +171,29 @@ func Op_9xy0(op_code uint16, pc *uint16, register *[0x10]uint8) {
 	if register[x] != register[y] {
 		pc += uint16(2)
 	}
+}
+
+// OP_code w/ the highest bits == Hex letter
+// Can ignore these opcodes for now.
+func Op_Annn(op_code uint16) {
+	nnn := op_code & 0xfff
+	I = nnn
+}
+
+func Op_Bnnn(op_code uint16) {
+	nnn := op_code & 0xfff
+	PC = nnn + register[0x0]
+}
+
+func Op_Cxkk(op_code uint16) {
+	x := (op_code >> 8) & 0xF
+	kk := op_code & 0xff
+	rand := uint8(rand.Intn(0xff))
+	register[x] = rand & kk
+}
+
+func Op_Dxyn(op_code uint16) {
+	return nil
 }
 
 func main() {
