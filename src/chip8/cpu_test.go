@@ -126,8 +126,42 @@ func TestOp_8xy1(t *testing.T) {
 func TestOp_8xy2(t *testing.T) {
 	var register [0x10]uint8
 	code := uint16(0x8b02)
+	x := (code >> 8) & 0xf
+	y := (code >> 4) & 0xf
+	old_val := register[x]
 	Op_8xy2(code)
-	if register[0xb] != 0xb&0x0 {
-		t.Error("Expected 0, got ", register[0xb])
+	if register[x] != old_val&register[y] {
+		t.Error("Incorrect value for Vx. Expected: ", old_val&register[y], ", got ", register[x])
+	}
+}
+
+func TestOp_8xy3(t *testing.T) {
+	var register [0x10]uint8
+	code := uint16(0x8d23)
+	x := (code >> 8) & 0xf
+	y := (code >> 4) & 0xf
+	old_val := register[x]
+	Op_8xy3(code)
+	if register[x] != old_val^register[y] {
+		t.Error("Incorrect value for Vx. Expected: ", old_val^register[y], ", got ", register[x])
+	}
+}
+
+func TestOp_8xy4(t *testing.T) {
+	var register [0x10]uint8
+	code := uint16(0x8e14)
+	x := (code >> 8) & 0xf
+	y := (code >> 4) & 0xf
+	old_val := register[x]
+	Op_8xy4(code)
+	VF := register[0xF]
+	if register[x] != old_val+register[y] {
+		t.Error("Incorrect value for Vx. Expected: ", old_val+register[y], ", got ", register[x])
+	}
+
+	if register[x] > 255 {
+		if VF != 1 {
+			t.Error("Flag not set.")
+		}
 	}
 }
