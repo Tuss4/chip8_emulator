@@ -17,6 +17,7 @@ func TestOp_1nnn(t *testing.T) {
 	code := uint16(0x1ccc)
 	low_bits := code & 0xfff
 	Op_1nnn(code)
+	// PC should be equal to low_bits
 	if PC != low_bits {
 		t.Error("Wrong value set to the counter.")
 		fmt.Println(PC, low_bits)
@@ -27,6 +28,7 @@ func TestOp_2nnn(t *testing.T) {
 	var PC uint16
 	code := uint16(0x2bb5)
 	low_bits := code & 0xfff
+	// PC should be equal to low_bits
 	if PC != low_bits {
 		t.Error("Wrong value set to counter")
 		fmt.Println(PC, low_bits)
