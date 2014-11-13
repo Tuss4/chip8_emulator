@@ -118,9 +118,9 @@ func Op_8xy4(op_code uint16) {
 	y := (op_code >> 4) & 0xF
 	register[x] += register[y]
 	if register[x] > 255 {
-		register[0xF] = 1
+		register[0xF] = uint8(1)
 	} else {
-		register[0xF] = 0
+		register[0xF] = uint8(0)
 	}
 }
 
@@ -129,18 +129,18 @@ func Op_8xy5(op_code uint16) {
 	y := (op_code >> 4) & 0xF
 	register[x] -= register[y]
 	if register[x] > register[y] {
-		register[0xF] = 1
+		register[0xF] = uint8(1)
 	} else {
-		register[0xF] = 0
+		register[0xF] = uint8(0)
 	}
 }
 
 func Op_8xy6(op_code uint16) {
 	x := (op_code >> 8) & 0xF
-	if register[x]&0x1 == 1 {
-		register[0xF] = 1
+	if register[x]&0x1 == uint8(1) {
+		register[0xF] = uint8(1)
 	} else {
-		register[0xF] = 0
+		register[0xF] = uint8(0)
 	}
 	register[x] = register[x] >> 1
 }
@@ -149,19 +149,19 @@ func Op_8xy7(op_code uint16) {
 	x := (op_code >> 8) & 0xF
 	y := (op_code >> 4) & 0xF
 	if register[y] > register[x] {
-		register[0xF] = 1
+		register[0xF] = uint8(1)
 	} else {
-		register[0xF] = 0
+		register[0xF] = uint8(0)
 	}
 	register[x] = register[y] - register[x]
 }
 
 func Op_8xyE(op_code uint16) {
 	x := (op_code >> 8) & 0xF
-	if register[x]&0x8 == 1 {
-		register[0xF] = 1
+	if register[x]&0x8 == uint8(1) {
+		register[0xF] = uint8(1)
 	} else {
-		register[0xF] = 0
+		register[0xF] = uint8(0)
 	}
 	register[x] = register[x] << 1
 }

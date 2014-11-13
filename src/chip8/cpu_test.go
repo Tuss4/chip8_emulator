@@ -158,7 +158,7 @@ func TestOp_8xy4(t *testing.T) {
 	}
 
 	if register[x] > 255 {
-		if VF != 1 {
+		if VF != uint8(1) {
 			t.Error("Flag not set.")
 		}
 	}
@@ -176,7 +176,7 @@ func TestOp_8xy5(t *testing.T) {
 	}
 
 	if register[x] > register[y] {
-		if VF != 1 {
+		if VF != uint8(1) {
 			t.Error("Flag not set.")
 		}
 	}
@@ -188,8 +188,8 @@ func TestOp_8xy6(t *testing.T) {
 	old_val := register[x]
 	Op_8xy6(code)
 	VF := register[0xF]
-	if old_val&0x1 == 1 {
-		if VF != 1 {
+	if old_val&0x1 == uint8(1) {
+		if VF != uint8(1) {
 			t.Error("Flag not set.")
 		}
 	}
@@ -207,7 +207,7 @@ func TestOp_8xy7(t *testing.T) {
 	Op_8xy7(code)
 	VF := register[0xF]
 	if register[y] > register[x] {
-		if VF != 1 {
+		if VF != uint8(1) {
 			t.Error("Flag not set.")
 		}
 	}
@@ -223,8 +223,8 @@ func TestOp_8xyE(t *testing.T) {
 	old_val := register[x]
 	Op_8xyE(code)
 	VF := register[0xF]
-	if old_val&0x8 == 1 {
-		if VF != 1 {
+	if old_val&0x8 == uint8(1) {
+		if VF != uint8(1) {
 			t.Error("Flag not set.")
 		}
 	}
