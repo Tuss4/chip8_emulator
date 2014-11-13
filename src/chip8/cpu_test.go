@@ -136,7 +136,6 @@ func TestOp_8xy2(t *testing.T) {
 }
 
 func TestOp_8xy3(t *testing.T) {
-	var register [0x10]uint8
 	code := uint16(0x8d23)
 	x := (code >> 8) & 0xf
 	y := (code >> 4) & 0xf
@@ -148,7 +147,6 @@ func TestOp_8xy3(t *testing.T) {
 }
 
 func TestOp_8xy4(t *testing.T) {
-	var register [0x10]uint8
 	code := uint16(0x8e14)
 	x := (code >> 8) & 0xf
 	y := (code >> 4) & 0xf
@@ -161,6 +159,88 @@ func TestOp_8xy4(t *testing.T) {
 
 	if register[x] > 255 {
 		if VF != 1 {
+			t.Error("Flag not set.")
+		}
+	}
+}
+
+func TestOp_8xy5(t *testing.T) {
+	code := uint16(0x8b35)
+	x := (code >> 8) & 0xf
+	y := (code >> 4) & 0xf
+	old_val := register[x]
+	Op_8xy5(code)
+	VF := register[0xF]
+	if register[x] != old_val-register[y] {
+		t.Error("Incorrect value for Vx. Expected: ", old_val-register[y], ", got ", register[x])
+	}
+
+	if register[x] > register[y] {
+		if VF != 1 {
+			t.Error("Flag not set.")
+		}
+	}
+}
+
+func TestOp_8xy6(t *testing.T) {
+	code := uint16(0x8126)
+	x := (code >> 8) & 0xf
+	old_val := register[x]
+	Op_8xy6(code)
+	VF := register[0xF]
+	if old_val&0x1 == 1 {
+		if VF != 1 {
+			t.Error("Flag not set.")
+		}
+	}
+
+	if register[x] != old_val>>1 {
+		t.Error("Incorrect value for Vx. Expected: ", old_val>>1, ", got ", register[x])
+	}
+}
+
+func TestOp_8xy7(t *testing.T) {
+	code := uint16(0x8a37)
+	x := (code >> 8) & 0xF
+	y := (code >> 4) & 0xF
+	old_val := register[x]
+	Op_8xy7(code)
+	VF := register[0xF]
+	if register[y] > register[x] {
+		if VF != 1 {
+			t.Error("Flag not set.")
+		}
+	}
+
+	if register[x] != register[y]-old_val {
+		t.Error("Incorrect value for Vx. Expected: ", register[y]-old_val, ", got ", register[x])
+	}
+}
+
+func TestOp_8xyE(t *testing.T) {
+	code := uint16(0x8b2E)
+	x := (code >> 8) & 0xF
+	old_val := register[x]
+	Op_8xyE(code)
+	VF := register[0xF]
+	if old_val&0x8 == 1 {
+		if VF != 1 {
+			t.Error("Flag not set.")
+		}
+	}
+	if register[x] != old_val<<1 {
+		t.Error("Incorrect value for Vx. Expected: ", old_val<<1, ", got ", register[x])
+	}
+}
+
+func TestOp_9xy0(t *testing.T) {
+	code := uint16(0x9b20)
+	x := (code >> 8) & 0xF
+	y := (code >> 4) & 0xF
+	old_PC := PC
+	Op_9xy0(code)
+	if register[x] != register[y] {
+		if PC != old_PC+uint16(2) {
 			t.Error("Flag not set.")
 		}
 	}
