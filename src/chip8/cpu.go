@@ -8,6 +8,8 @@ package main
 import (
 	"fmt"
 	// "math/rand"
+	"io/ioutil"
+	"log"
 )
 
 var memory [0x1000]uint8 // Represents the vm's 4kb of RAM
@@ -200,4 +202,10 @@ func main() {
 	Op_8xy2(0x8b02)
 	Op_8xy3(0x8d13)
 	fmt.Println(register)
+	// Set up the reading of the bytes
+	bytes, err := ioutil.ReadFile("PONG")
+	if err != nil {
+		log.Fatal(err)
+	}
+	fmt.Println(bytes)
 }
