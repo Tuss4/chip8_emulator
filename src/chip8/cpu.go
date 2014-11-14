@@ -28,6 +28,54 @@ var sp uint8
 // 	return nil
 // }
 
+func RunCPU(game []byte) {
+	fmt.Println(PC, sp, stack, register)
+	for _, code := range game {
+		switch {
+		case code == 0x00EE:
+			Op_00EE(uint16(code))
+		case (code >> 12) == 0x1:
+			Op_1nnn(uint16(code))
+		case (code >> 12) == 0x2:
+			Op_2nnn(uint16(code))
+		case (code >> 12) == 0x3:
+			Op_3xkk(uint16(code))
+		case (code >> 12) == 0x4:
+			Op_4xkk(uint16(code))
+		case (code >> 12) == 0x5:
+			Op_5xy0(uint16(code))
+		case (code >> 12) == 0x6:
+			Op_6xkk(uint16(code))
+		case (code >> 12) == 0x7:
+			Op_7xkk(uint16(code))
+		case (code >> 12) == 0x8:
+			switch {
+			case (code & 0xf) == 0x0:
+				Op_8xy0(uint16(code))
+			case (code & 0xf) == 0x1:
+				Op_8xy1(uint16(code))
+			case (code & 0xf) == 0x2:
+				Op_8xy2(uint16(code))
+			case (code & 0xf) == 0x3:
+				Op_8xy3(uint16(code))
+			case (code & 0xf) == 0x4:
+				Op_8xy4(uint16(code))
+			case (code & 0xf) == 0x5:
+				Op_8xy5(uint16(code))
+			case (code & 0xf) == 0x6:
+				Op_8xy6(uint16(code))
+			case (code & 0xf) == 0x7:
+				Op_8xy7(uint16(code))
+			case (code & 0xf) == 0xE:
+				Op_8xyE(uint16(code))
+			}
+		case (code >> 12) == 0x9:
+			Op_9xy0(uint16(code))
+		}
+	}
+	fmt.Println(PC, sp, stack, register)
+}
+
 func Op_00EE(op_code uint16) {
 	PC = stack[uint16(sp)]
 	sp -= uint8(1)
@@ -105,6 +153,7 @@ func Op_8xy2(op_code uint16) {
 	x := (op_code >> 8) & 0xF
 	y := (op_code >> 4) & 0xF
 	register[x] = register[x] & register[y]
+	fmt.Println("I've been called")
 }
 
 func Op_8xy3(op_code uint16) {
@@ -199,13 +248,10 @@ func Op_9xy0(op_code uint16) {
 // }
 
 func main() {
-	Op_8xy2(0x8b02)
-	Op_8xy3(0x8d13)
-	fmt.Println(register)
 	// Set up the reading of the bytes
 	bytes, err := ioutil.ReadFile("PONG")
 	if err != nil {
 		log.Fatal(err)
 	}
-	fmt.Println(bytes)
+	RunCPU(bytes)
 }
