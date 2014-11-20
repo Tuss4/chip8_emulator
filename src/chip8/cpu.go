@@ -19,9 +19,11 @@ var stack [0x10]uint16   // The 16x2byte stack
 var I uint16
 var PC uint16
 var sp uint8
+var DT uint8 // Delay Timer
+var ST uint8 // Sound Timer
 
-// To look at the highest bit >> 12
-// To look at the lowest bit & 0xf
+// To look at the highest bits >> 12
+// To look at the lowest bits & 0xf
 
 // Op_codes w/ the highest bits == 0x0
 // func Op_00E0() {
@@ -30,7 +32,7 @@ var sp uint8
 // }
 
 func RunCPU(game []byte) {
-	fmt.Println(PC, sp, stack, register)
+	fmt.Println(PC, sp, stack, register, I)
 	for _, code := range game {
 		switch {
 		case code == 0x00EE:
@@ -72,9 +74,11 @@ func RunCPU(game []byte) {
 			}
 		case (code >> 12) == 0x9:
 			Op_9xy0(uint16(code))
+		case (code >> 12) == 0xA:
+			Op_8xy0(uint16(code))
 		}
 	}
-	fmt.Println(PC, sp, stack, register)
+	fmt.Println(PC, sp, stack, register, I)
 }
 
 func Op_00EE(op_code uint16) {
@@ -227,10 +231,10 @@ func Op_9xy0(op_code uint16) {
 
 // OP_code w/ the highest bits == Hex letter
 // Can ignore these opcodes for now.
-// func Op_Annn(op_code uint16) {
-// 	nnn := op_code & 0xfff
-// 	I = nnn
-// }
+func Op_Annn(op_code uint16) {
+	nnn := op_code & 0xfff
+	I = nnn
+}
 
 // func Op_Bnnn(op_code uint16) {
 // 	nnn := op_code & 0xfff
@@ -263,7 +267,12 @@ func main() {
 			log.Fatal(err)
 		}
 		fmt.Println("Now running ", rom_path)
-		RunCPU(bytes)
+		fmt.Println(len(bytes))
+		fmt.Println(len(bytes) / 2)
+		for _, b := range bytes {
+			fmt.Printf("%#X\n", b)
+		}
+		// RunCPU(bytes)
 	} else {
 		fmt.Println("No rom specified, dude.")
 	}

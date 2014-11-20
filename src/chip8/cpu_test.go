@@ -245,3 +245,12 @@ func TestOp_9xy0(t *testing.T) {
 		}
 	}
 }
+
+func TestOp_Annn(t *testing.T) {
+	code := uint16(0xAc45)
+	nnn := code & 0xFFF
+	Op_Annn(code)
+	if I != nnn {
+		t.Error("I set incorrectly.")
+	}
+}
