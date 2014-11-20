@@ -257,10 +257,14 @@ func main() {
 		rom_path = os.Args[len(os.Args)-1]
 	}
 	// Set up the reading of the bytes
-	bytes, err := ioutil.ReadFile(rom_path)
-	if err != nil {
-		log.Fatal(err)
+	if rom_path != "" {
+		bytes, err := ioutil.ReadFile(rom_path)
+		if err != nil {
+			log.Fatal(err)
+		}
+		fmt.Println("Now running ", rom_path)
+		RunCPU(bytes)
+	} else {
+		fmt.Println("No rom specified, dude.")
 	}
-	fmt.Println("Now running ", rom_path)
-	RunCPU(bytes)
 }
