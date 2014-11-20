@@ -8,8 +8,10 @@ package main
 import (
 	"fmt"
 	// "math/rand"
+	// "flag"
 	"io/ioutil"
 	"log"
+	"os"
 )
 
 var memory [0x1000]uint8 // Represents the vm's 4kb of RAM
@@ -247,11 +249,19 @@ func Op_9xy0(op_code uint16) {
 // 	return nil
 // }
 
+var rom_path string
+
 func main() {
+	if len(os.Args) < 2 {
+		fmt.Println("Please specify the path to a rom.")
+	} else {
+		rom_path = os.Args[len(os.Args)-1]
+	}
 	// Set up the reading of the bytes
-	bytes, err := ioutil.ReadFile("PONG")
+	bytes, err := ioutil.ReadFile(rom_path)
 	if err != nil {
 		log.Fatal(err)
 	}
+	fmt.Println("Now running ", rom_path)
 	RunCPU(bytes)
 }
