@@ -31,10 +31,10 @@ var ST uint8 // Sound Timer
 // 	return nil
 // }
 
-func RunCPU(game []byte) {
+func RunCPU() {
 	fmt.Println(PC, sp, stack, register, I)
-	for b := 0; b < len(game); {
-		code := (uint16(game[b]) << 8) | uint16(game[b+1])
+	for {
+		code := (uint16(memory[PC]) << 8) | uint16(memory[PC+1])
 		switch {
 		case code == 0x00EE:
 			Op_00EE(code)
@@ -78,7 +78,6 @@ func RunCPU(game []byte) {
 		case (code >> 12) == 0xA:
 			Op_8xy0(code)
 		}
-		b += 2
 	}
 	fmt.Println(PC, sp, stack, register, I)
 }
@@ -255,7 +254,14 @@ func Op_Annn(op_code uint16) {
 
 var rom_path string
 
+func LoadGame(rom []byte) {
+	for b := 0; b < len(rom); b++ {
+		memory[b+0x200] = rom[b]
+	}
+}
+
 func main() {
+	PC = uint16(0x200)
 	if len(os.Args) < 2 {
 		fmt.Println("Please specify the path to a rom.")
 	} else {
@@ -268,7 +274,8 @@ func main() {
 			log.Fatal(err)
 		}
 		fmt.Println("Now running ", rom_path)
-		RunCPU(bytes)
+		LoadGame(bytes)
+		RunCPU()
 	} else {
 		fmt.Println("No rom specified, dude.")
 	}
