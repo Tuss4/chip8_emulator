@@ -33,50 +33,52 @@ var ST uint8 // Sound Timer
 
 func RunCPU(game []byte) {
 	fmt.Println(PC, sp, stack, register, I)
-	for _, code := range game {
+	for b := 0; b < len(game); {
+		code := (uint16(game[b]) << 8) | uint16(game[b+1])
 		switch {
 		case code == 0x00EE:
-			Op_00EE(uint16(code))
+			Op_00EE(code)
 		case (code >> 12) == 0x1:
-			Op_1nnn(uint16(code))
+			Op_1nnn(code)
 		case (code >> 12) == 0x2:
-			Op_2nnn(uint16(code))
+			Op_2nnn(code)
 		case (code >> 12) == 0x3:
-			Op_3xkk(uint16(code))
+			Op_3xkk(code)
 		case (code >> 12) == 0x4:
-			Op_4xkk(uint16(code))
+			Op_4xkk(code)
 		case (code >> 12) == 0x5:
-			Op_5xy0(uint16(code))
+			Op_5xy0(code)
 		case (code >> 12) == 0x6:
-			Op_6xkk(uint16(code))
+			Op_6xkk(code)
 		case (code >> 12) == 0x7:
-			Op_7xkk(uint16(code))
+			Op_7xkk(code)
 		case (code >> 12) == 0x8:
 			switch {
 			case (code & 0xf) == 0x0:
-				Op_8xy0(uint16(code))
+				Op_8xy0(code)
 			case (code & 0xf) == 0x1:
-				Op_8xy1(uint16(code))
+				Op_8xy1(code)
 			case (code & 0xf) == 0x2:
-				Op_8xy2(uint16(code))
+				Op_8xy2(code)
 			case (code & 0xf) == 0x3:
-				Op_8xy3(uint16(code))
+				Op_8xy3(code)
 			case (code & 0xf) == 0x4:
-				Op_8xy4(uint16(code))
+				Op_8xy4(code)
 			case (code & 0xf) == 0x5:
-				Op_8xy5(uint16(code))
+				Op_8xy5(code)
 			case (code & 0xf) == 0x6:
-				Op_8xy6(uint16(code))
+				Op_8xy6(code)
 			case (code & 0xf) == 0x7:
-				Op_8xy7(uint16(code))
+				Op_8xy7(code)
 			case (code & 0xf) == 0xE:
-				Op_8xyE(uint16(code))
+				Op_8xyE(code)
 			}
 		case (code >> 12) == 0x9:
-			Op_9xy0(uint16(code))
+			Op_9xy0(code)
 		case (code >> 12) == 0xA:
-			Op_8xy0(uint16(code))
+			Op_8xy0(code)
 		}
+		b += 2
 	}
 	fmt.Println(PC, sp, stack, register, I)
 }
@@ -267,12 +269,7 @@ func main() {
 			log.Fatal(err)
 		}
 		fmt.Println("Now running ", rom_path)
-		fmt.Println(len(bytes))
-		fmt.Println(len(bytes) / 2)
-		for _, b := range bytes {
-			fmt.Printf("%#X\n", b)
-		}
-		// RunCPU(bytes)
+		RunCPU(bytes)
 	} else {
 		fmt.Println("No rom specified, dude.")
 	}
