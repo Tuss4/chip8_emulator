@@ -160,7 +160,6 @@ func Op_8xy2(op_code uint16) {
 	x := (op_code >> 8) & 0xF
 	y := (op_code >> 4) & 0xF
 	register[x] = register[x] & register[y]
-	fmt.Println("I've been called")
 }
 
 func Op_8xy3(op_code uint16) {
