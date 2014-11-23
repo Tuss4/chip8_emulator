@@ -34,7 +34,8 @@ var ST uint8 // Sound Timer
 func RunCPU() {
 	fmt.Println(PC, sp, stack, register, I)
 	for {
-		code := (uint16(memory[PC]) << 8) | uint16(memory[PC+1])
+		code := (uint16(memory[PC]) << 8) | uint16(memory[PC+uint16(1)])
+		fmt.Printf("%#x\n", code)
 		switch {
 		case code == 0x00EE:
 			Op_00EE(code)
@@ -77,6 +78,8 @@ func RunCPU() {
 			Op_9xy0(code)
 		case (code >> 12) == 0xA:
 			Op_8xy0(code)
+		default:
+			fmt.Println("Opcode not implemented.")
 		}
 	}
 	fmt.Println(PC, sp, stack, register, I)
@@ -133,6 +136,7 @@ func Op_6xkk(op_code uint16) {
 	x := (op_code >> 8) & 0xf
 	kk := op_code & 0xff
 	register[x] = uint8(kk)
+	PC += uint16(2)
 }
 
 // Op_code w/ the highest bits == 0x7
@@ -140,6 +144,7 @@ func Op_7xkk(op_code uint16) {
 	x := (op_code >> 8) & 0xf
 	kk := op_code & 0xff
 	register[x] += uint8(kk)
+	PC += uint16(2)
 }
 
 // Op_ocodes w/ the highest bits == 0x8
@@ -147,24 +152,28 @@ func Op_8xy0(op_code uint16) {
 	x := (op_code >> 8) & 0xf
 	y := (op_code >> 4) & 0xf
 	register[x] = register[y]
+	PC += uint16(2)
 }
 
 func Op_8xy1(op_code uint16) {
 	x := (op_code >> 8) & 0xf
 	y := (op_code >> 4) & 0xf
 	register[x] = register[x] | register[y]
+	PC += uint16(2)
 }
 
 func Op_8xy2(op_code uint16) {
 	x := (op_code >> 8) & 0xF
 	y := (op_code >> 4) & 0xF
 	register[x] = register[x] & register[y]
+	PC += uint16(2)
 }
 
 func Op_8xy3(op_code uint16) {
 	x := (op_code >> 8) & 0xF
 	y := (op_code >> 4) & 0xF
 	register[x] = register[x] ^ register[y]
+	PC += uint16(2)
 }
 
 func Op_8xy4(op_code uint16) {
@@ -176,6 +185,7 @@ func Op_8xy4(op_code uint16) {
 	} else {
 		register[0xF] = uint8(0)
 	}
+	PC += uint16(2)
 }
 
 func Op_8xy5(op_code uint16) {
@@ -187,6 +197,7 @@ func Op_8xy5(op_code uint16) {
 	} else {
 		register[0xF] = uint8(0)
 	}
+	PC += uint16(2)
 }
 
 func Op_8xy6(op_code uint16) {
@@ -197,6 +208,7 @@ func Op_8xy6(op_code uint16) {
 		register[0xF] = uint8(0)
 	}
 	register[x] = register[x] >> 1
+	PC += uint16(2)
 }
 
 func Op_8xy7(op_code uint16) {
@@ -208,6 +220,7 @@ func Op_8xy7(op_code uint16) {
 		register[0xF] = uint8(0)
 	}
 	register[x] = register[y] - register[x]
+	PC += uint16(2)
 }
 
 func Op_8xyE(op_code uint16) {
@@ -218,6 +231,7 @@ func Op_8xyE(op_code uint16) {
 		register[0xF] = uint8(0)
 	}
 	register[x] = register[x] << 1
+	PC += uint16(2)
 }
 
 // Op_code w/ the highest bits == 0x9
@@ -234,6 +248,7 @@ func Op_9xy0(op_code uint16) {
 func Op_Annn(op_code uint16) {
 	nnn := op_code & 0xfff
 	I = nnn
+	PC += uint16(2)
 }
 
 // func Op_Bnnn(op_code uint16) {
