@@ -254,3 +254,22 @@ func TestOp_Annn(t *testing.T) {
 		t.Error("I set incorrectly.")
 	}
 }
+
+func TestOp_Bnnn(t *testing.T) {
+	code := uint16(0xB54c)
+	nnn := code & 0xFFF
+	Op_Bnnn(code)
+	if PC != nnn+uint16(register[0x0]) {
+		t.Error("PC set incorrectly.")
+	}
+}
+
+func TestOp_Cxkk(t *testing.T) {
+	code := uint16(0xC89d)
+	x := (code >> 8) & 0xF
+	old_val := register[x]
+	Op_Cxkk(code)
+	if register[x] == old_val {
+		t.Error("Vx set incorrectly.")
+	}
+}

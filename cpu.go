@@ -7,9 +7,9 @@ package main
 
 import (
 	"fmt"
-	// "math/rand"
 	"io/ioutil"
 	"log"
+	"math/rand"
 	"os"
 )
 
@@ -35,7 +35,6 @@ func RunCPU() {
 	fmt.Println(PC, sp, stack, register, I)
 	for {
 		code := (uint16(memory[PC]) << 8) | uint16(memory[PC+uint16(1)])
-		fmt.Printf("%#x\n", code)
 		switch {
 		case code == 0x00EE:
 			Op_00EE(code)
@@ -77,9 +76,15 @@ func RunCPU() {
 		case (code >> 12) == 0x9:
 			Op_9xy0(code)
 		case (code >> 12) == 0xA:
-			Op_8xy0(code)
+			Op_Annn(code)
+		case (code >> 12) == 0xB:
+			Op_Bnnn(code)
+		case (code >> 12) == 0xC:
+			Op_Cxkk(code)
+		case (code >> 12) == 0xD:
+			Op_Dxyn(code)
 		default:
-			fmt.Println("Opcode not implemented.")
+			fmt.Printf("Opcode: %#x not implemented.\n", code)
 		}
 	}
 	fmt.Println(PC, sp, stack, register, I)
@@ -251,21 +256,22 @@ func Op_Annn(op_code uint16) {
 	PC += uint16(2)
 }
 
-// func Op_Bnnn(op_code uint16) {
-// 	nnn := op_code & 0xfff
-// 	PC = nnn + register[0x0]
-// }
+func Op_Bnnn(op_code uint16) {
+	nnn := op_code & 0xfff
+	PC = nnn + uint16(register[0x0])
+}
 
-// func Op_Cxkk(op_code uint16) {
-// 	x := (op_code >> 8) & 0xF
-// 	kk := op_code & 0xff
-// 	rand := uint8(rand.Intn(0xff))
-// 	register[x] = rand & kk
-// }
+func Op_Cxkk(op_code uint16) {
+	x := (op_code >> 8) & 0xF
+	kk := op_code & 0xff
+	rand := uint16(rand.Intn(0xff))
+	register[x] = uint8(rand & kk)
+	PC += uint16(2)
+}
 
-// func Op_Dxyn(op_code uint16) {
-// 	return nil
-// }
+func Op_Dxyn(op_code uint16) {
+	PC += uint16(2)
+}
 
 var rom_path string
 
