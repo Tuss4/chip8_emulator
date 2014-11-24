@@ -26,17 +26,13 @@ var rom_path string
 // To look at the highest bits >> 12
 // To look at the lowest bits & 0xf
 
-// Op_codes w/ the highest bits == 0x0
-// func Op_00E0() {
-// 	// TODO: set up gfx then clear them with this function
-// 	return nil
-// }
-
 func RunCPU() {
 	fmt.Println(PC, sp, stack, register, I)
 	for {
 		code := (uint16(memory[PC]) << 8) | uint16(memory[PC+uint16(1)])
 		switch {
+		case code == 0x00E0:
+			Op_00E0(code)
 		case code == 0x00EE:
 			Op_00EE(code)
 		case (code >> 12) == 0x1:
@@ -89,6 +85,12 @@ func RunCPU() {
 		}
 	}
 	fmt.Println(PC, sp, stack, register, I)
+}
+
+// Op_codes w/ the highest bits == 0x0
+func Op_00E0(op_code uint16) {
+	// TODO: set up gfx then clear them with this function
+	PC += uint16(2)
 }
 
 func Op_00EE(op_code uint16) {
