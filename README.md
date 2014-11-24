@@ -6,7 +6,7 @@ Chip 8 emulator built in Go.
 Pong was retrieved from the Chip-8 Games pack (Public Domain) 
 http://www.zophar.net/pdroms/chip8.html
 ##How To Run a ROM
-+ Change directory: `cd src/chip8/`
++ Make sure the directory is in your `$GOPATH/src/`
 + Use the following command `go run cpu.go [path_to_rom_binary]`
 
 ##References

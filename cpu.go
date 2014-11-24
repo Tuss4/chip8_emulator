@@ -21,6 +21,7 @@ var PC uint16
 var sp uint8
 var DT uint8 // Delay Timer
 var ST uint8 // Sound Timer
+var rom_path string
 
 // To look at the highest bits >> 12
 // To look at the lowest bits & 0xf
@@ -273,7 +274,27 @@ func Op_Dxyn(op_code uint16) {
 	PC += uint16(2)
 }
 
-var rom_path string
+func Op_Ex9E(op_code uint16) {}
+
+func Op_ExA1(op_code uint16) {}
+
+func Op_Fx07(op_code uint16) {}
+
+func Op_Fx0A(op_code uint16) {}
+
+func Op_Fx15(op_code uint16) {}
+
+func Op_Fx18(op_code uint16) {}
+
+func Op_Fx1E(op_code uint16) {}
+
+func Op_Fx29(op_code uint16) {}
+
+func Op_Fx33(op_code uint16) {}
+
+func Op_Fx55(op_code uint16) {}
+
+func Op_Fx65(op_code uint16) {}
 
 func LoadGame(rom []byte) {
 	for b := 0; b < len(rom); b++ {
