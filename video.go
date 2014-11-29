@@ -3,9 +3,7 @@
 package main
 
 import (
-	"fmt"
 	"github.com/go-gl/glfw"
-	"os"
 )
 
 var running bool
