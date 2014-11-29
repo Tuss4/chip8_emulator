@@ -10,7 +10,12 @@ import (
 
 var running bool
 
-func main() {
+type Video struct {
+	width, height int
+	title         string
+}
+
+func (v *Video) Initialize() {
 	var err error
 
 	if err = glfw.Init(); err != nil {
@@ -20,7 +25,7 @@ func main() {
 
 	defer glfw.Terminate()
 
-	if err = glfw.OpenWindow(640, 320, 2040, 2040, 2040, 0, 0, 0, glfw.Windowed); err != nil {
+	if err = glfw.OpenWindow(v.width, v.height, 8, 8, 8, 0, 0, 0, glfw.Windowed); err != nil {
 		fmt.Fprintf(os.Stderr, "[e] %v\n", err)
 		return
 	}
@@ -29,7 +34,7 @@ func main() {
 
 	glfw.SetSwapInterval(1)
 
-	glfw.SetWindowTitle("Chip 8 Emulator Window")
+	glfw.SetWindowTitle(v.title)
 
 	glfw.SetWindowCloseCallback(onClose)
 	glfw.SetKeyCallback(onKey)

@@ -13,15 +13,18 @@ import (
 	"os"
 )
 
-var memory [0x1000]uint8 // Represents the vm's 4kb of RAM
-var register [0x10]uint8 // The registers
-var stack [0x10]uint16   // The 16x2byte stack
-var I uint16
-var PC uint16
-var sp uint8
-var DT uint8 // Delay Timer
-var ST uint8 // Sound Timer
-var rom_path string
+var (
+	memory   [0x1000]uint8 // Represents the vm's 4kb of RAM
+	register [0x10]uint8   // The registers
+	stack    [0x10]uint16  // The 16x2byte stack
+	I        uint16
+	PC       uint16
+	sp       uint8
+	DT       uint8 // Delay Timer
+	ST       uint8 // Sound Timer
+	rom_path string
+	vid      Video
+)
 
 // To look at the highest bits >> 12
 // To look at the lowest bits & 0xf
@@ -305,6 +308,10 @@ func LoadGame(rom []byte) {
 }
 
 func main() {
+	vid.width = 640
+	vid.height = 320
+	vid.title = "Chip8 Emulator"
+	vid.Initialize()
 	PC = uint16(0x200)
 	if len(os.Args) < 2 {
 		fmt.Println("Please specify the path to a rom.")
