@@ -20,8 +20,8 @@ var (
 )
 
 func main() {
-	vid.width = 640
-	vid.height = 320
+	vid.width = 64
+	vid.height = 32
 	system.PC = uint16(0x200)
 	if len(os.Args) < 2 {
 		fmt.Println("Please specify the path to a rom.")
@@ -39,7 +39,5 @@ func main() {
 		vid.Initialize()
 		system.LoadGame(bytes)
 		system.RunCPU()
-	} else {
-		fmt.Println("No rom specified, dude.")
 	}
 }
