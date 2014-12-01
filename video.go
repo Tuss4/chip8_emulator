@@ -3,9 +3,10 @@
 package main
 
 import (
-	"fmt"
-	"github.com/go-gl/glfw"
-	"os"
+	// "fmt"
+	// "github.com/go-gl/gl"
+	"github.com/banthar/Go-SDL/sdl"
+	"log"
 )
 
 var running bool
@@ -16,45 +17,17 @@ type Video struct {
 }
 
 func (v *Video) Initialize() {
-	var err error
+	sdl.Init(sdl.INIT_VIDEO)
 
-	if err = glfw.Init(); err != nil {
-		fmt.Fprintf(os.Stderr, "[e] %v\n", err)
-		return
+	defer sdl.Quit()
+
+	window := sdl.SetVideoMode(v.width, v.height, 32, sdl.OPENGL)
+	if window == nil {
+		log.Fatal(sdl.GetError())
 	}
 
-	defer glfw.Terminate()
+	sdl.WM_SetCaption(v.title, "")
+	sdl.Delay(3000)
+	return
 
-	if err = glfw.OpenWindow(v.width, v.height, 8, 8, 8, 0, 0, 0, glfw.Windowed); err != nil {
-		fmt.Fprintf(os.Stderr, "[e] %v\n", err)
-		return
-	}
-
-	defer glfw.CloseWindow()
-
-	glfw.SetSwapInterval(1)
-
-	glfw.SetWindowTitle(v.title)
-
-	glfw.SetWindowCloseCallback(onClose)
-	glfw.SetKeyCallback(onKey)
-
-	running = true
-
-	for running {
-		glfw.SwapBuffers()
-
-		running = glfw.Key(glfw.KeyEsc) == 0 && glfw.WindowParam(glfw.Opened) == 1
-	}
-}
-
-func onKey(key, state int) {
-	if key == glfw.KeyEsc {
-		running = state == 0
-	}
-}
-
-func onClose() int {
-	fmt.Println("closed")
-	return 1
 }
