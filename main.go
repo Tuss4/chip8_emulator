@@ -20,8 +20,8 @@ var (
 )
 
 func main() {
-	vid.width = 64
-	vid.height = 32
+	vid.width = 640
+	vid.height = 320
 	system.PC = uint16(0x200)
 	if len(os.Args) < 2 {
 		fmt.Println("Please specify the path to a rom.")

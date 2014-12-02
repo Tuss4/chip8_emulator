@@ -3,13 +3,9 @@
 package main
 
 import (
-	// "fmt"
-	// "github.com/go-gl/gl"
 	"github.com/banthar/Go-SDL/sdl"
 	"log"
 )
-
-var running bool
 
 type Video struct {
 	width, height int
