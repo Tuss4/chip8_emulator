@@ -7,7 +7,8 @@ Pong was retrieved from the Chip-8 Games pack (Public Domain)
 http://www.zophar.net/pdroms/chip8.html
 ##How To Run a ROM
 + Make sure the directory is in your `$GOPATH/src/`
-+ Use the following command `go run cpu.go [path_to_rom_binary]`
++ run `go install`
++ Use the following command `chip8_emulator [path_to_rom_binary]`
 
 ##References
 + http://en.wikipedia.org/wiki/CHIP-8
