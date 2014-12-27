@@ -9,7 +9,7 @@ http://www.zophar.net/pdroms/chip8.html
 + Make sure the directory is in your `$GOPATH/src/`
 + run `go install`
 + Use the following command `chip8_emulator [path_to_rom_binary]`
-o
+
 ##References
 + http://en.wikipedia.org/wiki/CHIP-8
 + http://devernay.free.fr/hacks/chip8/C8TECH10.HTM
