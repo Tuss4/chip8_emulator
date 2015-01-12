@@ -22,23 +22,15 @@ func (v *Video) Initialize() {
 		log.Fatal(sdl.GetError())
 	}
 
-	image := sdl.Load("spidey.jpg")
-
-	window.Blit(nil, image, nil)
-
-	window.Flip()
-
 	sdl.WM_SetCaption(v.title, "")
 
-	rect := sdl.Rect{40, 40, 200, 200}
+	rect := sdl.Rect{40, 40, 10, 10}
 
 	window.FillRect(&rect, sdl.MapRGB(window.Format, 0xff, 0xff, 0xff))
 
 	window.Flip()
 
 	sdl.Delay(1000)
-
-	image.Free()
 
 	return
 
