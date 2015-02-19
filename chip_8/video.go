@@ -1,6 +1,6 @@
 // Thanks in part to
 // https://github.com/go-gl/examples/blob/master/glfw/simplewindow/main.go
-package main
+package chip_8
 
 import (
 	"github.com/banthar/Go-SDL/sdl"
@@ -35,3 +35,16 @@ func (v *Video) Initialize() {
 	return
 
 }
+
+func (v *Video) SetWidthHeight(w, h int) {
+	v.height = h
+	v.width = w
+}
+
+func (v *Video) SetTitle(title string) {
+	v.title = title
+}
+
+// func (v *Video) Draw() {
+// 	return
+// }

@@ -19,6 +19,7 @@ type CPU struct {
 	sp       uint8
 	DT       uint8 // Delay Timer
 	ST       uint8 // Sound Timer
+	Video    Video
 }
 
 // To look at the highest bits >> 12
@@ -44,6 +45,7 @@ var sprites = []byte{
 }
 
 func (c *CPU) RunCPU() {
+	c.Video.Initialize()
 	fmt.Println(c.PC, c.sp, c.stack, c.register, c.I)
 	for {
 		code := (uint16(c.memory[c.PC]) << 8) | uint16(c.memory[c.PC+uint16(1)])
