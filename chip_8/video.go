@@ -3,37 +3,42 @@
 package chip_8
 
 import (
-	"github.com/banthar/Go-SDL/sdl"
+	"github.com/veandco/go-sdl2/sdl"
 	"log"
 )
 
 type Video struct {
 	width, height int
 	title         string
+	the_screen    *sdl.Window
+	the_renderer  *sdl.Renderer
 }
 
 func (v *Video) Initialize() {
-	sdl.Init(sdl.INIT_VIDEO)
+	sdl.Init(sdl.INIT_EVERYTHING)
 
 	defer sdl.Quit()
+	window, err := sdl.CreateWindow(v.title, sdl.WINDOWPOS_UNDEFINED, sdl.WINDOWPOS_UNDEFINED,
+		v.width, v.height, sdl.WINDOW_SHOWN)
 
-	window := sdl.SetVideoMode(v.width, v.height, 32, sdl.SWSURFACE)
-	if window == nil {
+	v.the_screen = window
+
+	if err != nil {
 		log.Fatal(sdl.GetError())
 	}
+	defer v.the_screen.Destroy()
 
-	sdl.WM_SetCaption(v.title, "")
+	renderer, r_err := sdl.CreateRenderer(v.the_screen, 1, sdl.RENDERER_ACCELERATED)
+	v.the_renderer = renderer
+	if r_err != nil {
+		log.Fatal(sdl.GetError())
+	}
+	defer v.the_renderer.Destroy()
 
-	rect := sdl.Rect{40, 40, 10, 10}
+	v.Draw()
 
-	window.FillRect(&rect, sdl.MapRGB(window.Format, 0xff, 0xff, 0xff))
-
-	window.Flip()
-
-	sdl.Delay(1000)
-
+	sdl.Delay(3000)
 	return
-
 }
 
 func (v *Video) SetWidthHeight(w, h int) {
@@ -45,6 +50,12 @@ func (v *Video) SetTitle(title string) {
 	v.title = title
 }
 
-// func (v *Video) Draw() {
-// 	return
-// }
+func (v *Video) Draw() {
+	v.the_renderer.Clear()
+	v.the_renderer.SetDrawColor(0, 0, 0, 0)
+	rect := sdl.Rect{50, 0, 50, 50}
+	v.the_renderer.DrawRect(&rect)
+	v.the_renderer.SetDrawColor(255, 255, 255, 0)
+	v.the_renderer.FillRect(&rect)
+	v.the_renderer.Present()
+}
