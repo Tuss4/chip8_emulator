@@ -42,6 +42,7 @@ func (v *Video) Initialize(sig chan string) {
 		switch {
 		case msg == "boom":
 			v.Draw()
+			sdl.Delay(3000)
 		case msg == "clear":
 			v.the_renderer.Clear()
 		}

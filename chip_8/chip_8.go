@@ -47,7 +47,6 @@ func (c *CPU) RunCPU(sig chan string) {
 	fmt.Println(c.PC, c.sp, c.stack, c.register, c.I)
 	for {
 		code := (uint16(c.memory[c.PC]) << 8) | uint16(c.memory[c.PC+uint16(1)])
-		fmt.Printf("%#x\n", code)
 		switch {
 		case code == 0x00E0:
 			c.Op_00E0(code, sig)
@@ -298,7 +297,6 @@ func (c *CPU) Op_Dxyn(op_code uint16, sig chan string) {
 	// set register[0xF] to 1 if pixels are erased
 	sig <- "boom"
 	c.PC += uint16(2)
-	fmt.Printf("code currently running: %#X\n", op_code)
 }
 
 func (c *CPU) Op_Ex9E(op_code uint16) {}
