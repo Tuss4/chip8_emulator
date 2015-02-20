@@ -19,6 +19,11 @@ var (
 	video    Video
 )
 
+type Signal struct {
+	Msg   string
+	Bytes []uint8
+}
+
 func main() {
 	system.PC = uint16(0x200)
 	video.SetWidthHeight(640, 320)
@@ -33,7 +38,7 @@ func main() {
 		if err != nil {
 			log.Fatal(err)
 		}
-		c := make(chan string)
+		c := make(chan chip_8.Signal)
 		defer close(c)
 		fmt.Println("Now running ", rom_path)
 		video.SetTitle("Chip-8 Window: " + rom_path)

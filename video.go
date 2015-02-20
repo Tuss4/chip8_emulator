@@ -3,6 +3,7 @@
 package main
 
 import (
+	"github.com/tuss4/chip8_emulator/chip_8"
 	"github.com/veandco/go-sdl2/sdl"
 	"log"
 )
@@ -14,7 +15,7 @@ type Video struct {
 	the_renderer  *sdl.Renderer
 }
 
-func (v *Video) Initialize(sig chan string) {
+func (v *Video) Initialize(sig chan chip_8.Signal) {
 	sdl.Init(sdl.INIT_EVERYTHING)
 
 	defer sdl.Quit()
@@ -40,10 +41,10 @@ func (v *Video) Initialize(sig chan string) {
 	for {
 		msg := <-sig
 		switch {
-		case msg == "boom":
+		case msg.Msg == "draw":
 			v.Draw()
 			sdl.Delay(3000)
-		case msg == "clear":
+		case msg.Msg == "clear":
 			v.the_renderer.Clear()
 		}
 	}

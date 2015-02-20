@@ -10,6 +10,11 @@ import (
 	"math/rand"
 )
 
+type Signal struct {
+	Msg   string
+	Bytes []uint8
+}
+
 type CPU struct {
 	memory   [0x1000]uint8 // Represents the vm's 4kb of RAM
 	register [0x10]uint8   // The registers
@@ -43,7 +48,7 @@ var sprites = []byte{
 	0xf0, 0x80, 0xf0, 0x80, 0x80,
 }
 
-func (c *CPU) RunCPU(sig chan string) {
+func (c *CPU) RunCPU(sig chan Signal) {
 	fmt.Println(c.PC, c.sp, c.stack, c.register, c.I)
 	for {
 		code := (uint16(c.memory[c.PC]) << 8) | uint16(c.memory[c.PC+uint16(1)])
@@ -105,9 +110,10 @@ func (c *CPU) RunCPU(sig chan string) {
 }
 
 // Op_codes w/ the highest bits == 0x0
-func (c *CPU) Op_00E0(op_code uint16, sig chan string) {
+func (c *CPU) Op_00E0(op_code uint16, sig chan Signal) {
 	// TODO: set up gfx then clear them with this function
-	sig <- "clear"
+	msg := Signal{"clear", []uint8{}}
+	sig <- msg
 	c.PC += uint16(2)
 }
 
@@ -290,12 +296,13 @@ func (c *CPU) Op_Cxkk(op_code uint16) {
 	c.PC += uint16(2)
 }
 
-func (c *CPU) Op_Dxyn(op_code uint16, sig chan string) {
+func (c *CPU) Op_Dxyn(op_code uint16, sig chan Signal) {
 	// x := (op_code >> 8) & 0xF
 	// y := (op_code >> 4) & 0xF
 	// display bite at memory location I with coordinates register[x], register[y]
 	// set register[0xF] to 1 if pixels are erased
-	sig <- "boom"
+	msg := Signal{"draw", []uint8{}}
+	sig <- msg
 	c.PC += uint16(2)
 }
 
