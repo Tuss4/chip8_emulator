@@ -15,7 +15,6 @@ type Video struct {
 }
 
 func (v *Video) Initialize(sig chan string) {
-	msg := <-sig
 	sdl.Init(sdl.INIT_EVERYTHING)
 
 	defer sdl.Quit()
@@ -38,11 +37,14 @@ func (v *Video) Initialize(sig chan string) {
 	v.the_renderer.SetDrawColor(0, 0, 0, 0)
 	v.the_renderer.Present()
 	defer v.the_renderer.Destroy()
-	switch {
-	case msg == "boom":
-		v.Draw()
-	case msg == "clear":
-		v.the_renderer.Clear()
+	for {
+		msg := <-sig
+		switch {
+		case msg == "boom":
+			v.Draw()
+		case msg == "clear":
+			v.the_renderer.Clear()
+		}
 	}
 	sdl.Delay(3000)
 	return
