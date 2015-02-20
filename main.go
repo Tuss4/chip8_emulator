@@ -19,11 +19,6 @@ var (
 	video    Video
 )
 
-type Signal struct {
-	Msg   string
-	Bytes []uint8
-}
-
 func main() {
 	system.PC = uint16(0x200)
 	video.SetWidthHeight(640, 320)
