@@ -19,7 +19,6 @@ type CPU struct {
 	sp       uint8
 	DT       uint8 // Delay Timer
 	ST       uint8 // Sound Timer
-	Video    Video
 }
 
 // To look at the highest bits >> 12
@@ -44,14 +43,14 @@ var sprites = []byte{
 	0xf0, 0x80, 0xf0, 0x80, 0x80,
 }
 
-func (c *CPU) RunCPU() {
-	c.Video.Initialize()
+func (c *CPU) RunCPU(sig chan string) {
 	fmt.Println(c.PC, c.sp, c.stack, c.register, c.I)
 	for {
 		code := (uint16(c.memory[c.PC]) << 8) | uint16(c.memory[c.PC+uint16(1)])
+		fmt.Printf("%#x\n", code)
 		switch {
 		case code == 0x00E0:
-			c.Op_00E0(code)
+			c.Op_00E0(code, sig)
 		case code == 0x00EE:
 			c.Op_00EE(code)
 		case (code >> 12) == 0x1:
@@ -98,7 +97,7 @@ func (c *CPU) RunCPU() {
 		case (code >> 12) == 0xC:
 			c.Op_Cxkk(code)
 		case (code >> 12) == 0xD:
-			c.Op_Dxyn(code)
+			c.Op_Dxyn(code, sig)
 		default:
 			fmt.Printf("Opcode: %#x not implemented.\n", code)
 		}
@@ -107,8 +106,9 @@ func (c *CPU) RunCPU() {
 }
 
 // Op_codes w/ the highest bits == 0x0
-func (c *CPU) Op_00E0(op_code uint16) {
+func (c *CPU) Op_00E0(op_code uint16, sig chan string) {
 	// TODO: set up gfx then clear them with this function
+	sig <- "clear"
 	c.PC += uint16(2)
 }
 
@@ -291,12 +291,14 @@ func (c *CPU) Op_Cxkk(op_code uint16) {
 	c.PC += uint16(2)
 }
 
-func (c *CPU) Op_Dxyn(op_code uint16) {
+func (c *CPU) Op_Dxyn(op_code uint16, sig chan string) {
 	// x := (op_code >> 8) & 0xF
 	// y := (op_code >> 4) & 0xF
 	// display bite at memory location I with coordinates register[x], register[y]
 	// set register[0xF] to 1 if pixels are erased
+	sig <- "boom"
 	c.PC += uint16(2)
+	fmt.Printf("code currently running: %#X\n", op_code)
 }
 
 func (c *CPU) Op_Ex9E(op_code uint16) {}

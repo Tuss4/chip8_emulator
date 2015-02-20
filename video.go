@@ -1,6 +1,6 @@
 // Thanks in part to
 // https://github.com/go-gl/examples/blob/master/glfw/simplewindow/main.go
-package chip_8
+package main
 
 import (
 	"github.com/veandco/go-sdl2/sdl"
@@ -14,7 +14,8 @@ type Video struct {
 	the_renderer  *sdl.Renderer
 }
 
-func (v *Video) Initialize() {
+func (v *Video) Initialize(sig chan string) {
+	msg := <-sig
 	sdl.Init(sdl.INIT_EVERYTHING)
 
 	defer sdl.Quit()
@@ -33,10 +34,16 @@ func (v *Video) Initialize() {
 	if r_err != nil {
 		log.Fatal(sdl.GetError())
 	}
+	v.the_renderer.Clear()
+	v.the_renderer.SetDrawColor(0, 0, 0, 0)
+	v.the_renderer.Present()
 	defer v.the_renderer.Destroy()
-
-	v.Draw()
-
+	switch {
+	case msg == "boom":
+		v.Draw()
+	case msg == "clear":
+		v.the_renderer.Clear()
+	}
 	sdl.Delay(3000)
 	return
 }
@@ -52,7 +59,6 @@ func (v *Video) SetTitle(title string) {
 
 func (v *Video) Draw() {
 	v.the_renderer.Clear()
-	v.the_renderer.SetDrawColor(0, 0, 0, 0)
 	rect := sdl.Rect{50, 0, 50, 50}
 	v.the_renderer.DrawRect(&rect)
 	v.the_renderer.SetDrawColor(255, 255, 255, 0)

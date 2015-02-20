@@ -16,11 +16,12 @@ import (
 var (
 	system   chip_8.CPU
 	rom_path string
+	video    Video
 )
 
 func main() {
 	system.PC = uint16(0x200)
-	system.Video.SetWidthHeight(640, 320)
+	video.SetWidthHeight(640, 320)
 	if len(os.Args) < 2 {
 		fmt.Println("Please specify the path to a rom.")
 	} else {
@@ -32,9 +33,12 @@ func main() {
 		if err != nil {
 			log.Fatal(err)
 		}
+		c := make(chan string)
+		defer close(c)
 		fmt.Println("Now running ", rom_path)
-		system.Video.SetTitle("Chip-8 Window: " + rom_path)
+		video.SetTitle("Chip-8 Window: " + rom_path)
 		system.LoadGame(bytes)
-		system.RunCPU()
+		go system.RunCPU(c)
+		video.Initialize(c)
 	}
 }
