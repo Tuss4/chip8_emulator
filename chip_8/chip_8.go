@@ -51,7 +51,6 @@ var sprites = []uint8{
 }
 
 func (c *CPU) RunCPU(sig chan Signal) {
-	fmt.Println(c.PC, c.sp, c.stack, c.register, c.I)
 	for {
 		code := (uint16(c.memory[c.PC]) << 8) | uint16(c.memory[c.PC+uint16(1)])
 		switch {
