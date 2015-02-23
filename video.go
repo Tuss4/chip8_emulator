@@ -45,7 +45,7 @@ func (v *Video) Initialize(sig chan chip_8.Signal) {
 			v.Draw()
 			sdl.Delay(3000)
 		case msg.Msg == "clear":
-			v.the_renderer.Clear()
+			v.Clear()
 		}
 	}
 	sdl.Delay(3000)
@@ -63,9 +63,15 @@ func (v *Video) SetTitle(title string) {
 
 func (v *Video) Draw() {
 	v.the_renderer.Clear()
-	rect := sdl.Rect{50, 0, 50, 50}
+	rect := sdl.Rect{15, 10, 1, 1}
 	v.the_renderer.DrawRect(&rect)
 	v.the_renderer.SetDrawColor(255, 255, 255, 0)
 	v.the_renderer.FillRect(&rect)
+	v.the_renderer.Present()
+}
+
+func (v *Video) Clear() {
+	v.the_renderer.Clear()
+	v.the_renderer.SetDrawColor(0, 0, 0, 0)
 	v.the_renderer.Present()
 }

@@ -11,8 +11,10 @@ import (
 )
 
 type Signal struct {
-	Msg   string
-	Bytes []uint8
+	Msg    string
+	Xcoord uint8
+	Ycoord uint8
+	Bytes  []uint8
 }
 
 type CPU struct {
@@ -112,7 +114,7 @@ func (c *CPU) RunCPU(sig chan Signal) {
 // Op_codes w/ the highest bits == 0x0
 func (c *CPU) Op_00E0(op_code uint16, sig chan Signal) {
 	// TODO: set up gfx then clear them with this function
-	msg := Signal{"clear", []uint8{}}
+	msg := Signal{"clear", 0, 0, []uint8{}}
 	sig <- msg
 	c.PC += uint16(2)
 }
@@ -301,7 +303,9 @@ func (c *CPU) Op_Dxyn(op_code uint16, sig chan Signal) {
 	// y := (op_code >> 4) & 0xF
 	// display bite at memory location I with coordinates register[x], register[y]
 	// set register[0xF] to 1 if pixels are erased
-	msg := Signal{"draw", []uint8{}}
+	n := op_code & 0xF
+	fmt.Println(c.memory[c.I : c.I+uint16(n)])
+	msg := Signal{"draw", 0, 0, []uint8{}}
 	sig <- msg
 	c.PC += uint16(2)
 }

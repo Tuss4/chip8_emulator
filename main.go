@@ -21,7 +21,7 @@ var (
 
 func main() {
 	system.PC = uint16(0x200)
-	video.SetWidthHeight(640, 320)
+	video.SetWidthHeight(64, 32)
 	if len(os.Args) < 2 {
 		fmt.Println("Please specify the path to a rom.")
 	} else {
