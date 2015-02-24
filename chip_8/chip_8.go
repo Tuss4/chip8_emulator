@@ -103,6 +103,11 @@ func (c *CPU) RunCPU(sig chan Signal) {
 			c.Op_Cxkk(code)
 		case (code >> 12) == 0xD:
 			c.Op_Dxyn(code, sig)
+		case (code >> 12) == 0xF:
+			switch {
+			case (code & 0x00FF) == 0x33:
+				c.Op_Fx33(code)
+			}
 		default:
 			fmt.Printf("Opcode: %#x not implemented.\n", code)
 		}
@@ -298,12 +303,18 @@ func (c *CPU) Op_Cxkk(op_code uint16) {
 }
 
 func (c *CPU) Op_Dxyn(op_code uint16, sig chan Signal) {
-	// x := (op_code >> 8) & 0xF
-	// y := (op_code >> 4) & 0xF
+	// var pixel uint8
+	// x := c.register[(op_code>>8)&0xF]
+	// y := c.register[(op_code>>4)&0xF]
+	// fmt.Printf("%#X\n", op_code)
+	// height := op_code & 0x000F
 	// display bite at memory location I with coordinates register[x], register[y]
 	// set register[0xF] to 1 if pixels are erased
-	n := op_code & 0xF
-	fmt.Println(c.memory[c.I : c.I+uint16(n)])
+	// c.register[0xF] = 0
+	// for yline := uint8(0); yline < uint8(height); yline++ {
+	// 	pixel := uint8(c.memory[c.I+uint16(yline)])
+	// 	fmt.Printf("%#X\n", pixel)
+	// }
 	msg := Signal{"draw", 0, 0, []uint8{}}
 	sig <- msg
 	c.PC += uint16(2)
@@ -325,7 +336,13 @@ func (c *CPU) Op_Fx1E(op_code uint16) {}
 
 func (c *CPU) Op_Fx29(op_code uint16) {}
 
-func (c *CPU) Op_Fx33(op_code uint16) {}
+func (c *CPU) Op_Fx33(op_code uint16) {
+	x := c.register[(op_code&0x0f00)>>8]
+	c.memory[c.I] = x / 100
+	c.memory[c.I+uint16(1)] = (x / 10) % 10
+	c.memory[c.I+uint16(2)] = (x % 100) % 10
+	c.PC += uint16(2)
+}
 
 func (c *CPU) Op_Fx55(op_code uint16) {}
 
