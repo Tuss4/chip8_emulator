@@ -103,8 +103,27 @@ func (c *CPU) RunCPU(sig chan Signal) {
 			c.Op_Cxkk(code)
 		case (code >> 12) == 0xD:
 			c.Op_Dxyn(code, sig)
+		case (code >> 12) == 0xE:
+			switch {
+			case (code & 0x00FF) == 0x9E:
+				c.Op_Ex9E(code)
+			case (code & 0x00FF) == 0xA1:
+				c.Op_ExA1(code)
+			}
 		case (code >> 12) == 0xF:
 			switch {
+			case (code & 0x00FF) == 0x07:
+				c.Op_Fx07(code)
+			case (code & 0x00FF) == 0x0A:
+				c.Op_Fx0A(code)
+			case (code & 0x00FF) == 0x15:
+				c.Op_Fx15(code)
+			case (code & 0x00FF) == 0x18:
+				c.Op_Fx18(code)
+			case (code & 0x00FF) == 0x1E:
+				c.Op_Fx1E(code)
+			case (code & 0x00FF) == 0x29:
+				c.Op_Fx29(code)
 			case (code & 0x00FF) == 0x33:
 				c.Op_Fx33(code)
 			}
@@ -329,21 +348,37 @@ func (c *CPU) Op_Dxyn(op_code uint16, sig chan Signal) {
 	c.PC += uint16(2)
 }
 
-func (c *CPU) Op_Ex9E(op_code uint16) {}
+func (c *CPU) Op_Ex9E(op_code uint16) {
+	c.PC += uint16(2)
+}
 
-func (c *CPU) Op_ExA1(op_code uint16) {}
+func (c *CPU) Op_ExA1(op_code uint16) {
+	c.PC += uint16(2)
+}
 
-func (c *CPU) Op_Fx07(op_code uint16) {}
+func (c *CPU) Op_Fx07(op_code uint16) {
+	c.PC += uint16(2)
+}
 
-func (c *CPU) Op_Fx0A(op_code uint16) {}
+func (c *CPU) Op_Fx0A(op_code uint16) {
+	c.PC += uint16(2)
+}
 
-func (c *CPU) Op_Fx15(op_code uint16) {}
+func (c *CPU) Op_Fx15(op_code uint16) {
+	c.PC += uint16(2)
+}
 
-func (c *CPU) Op_Fx18(op_code uint16) {}
+func (c *CPU) Op_Fx18(op_code uint16) {
+	c.PC += uint16(2)
+}
 
-func (c *CPU) Op_Fx1E(op_code uint16) {}
+func (c *CPU) Op_Fx1E(op_code uint16) {
+	c.PC += uint16(2)
+}
 
-func (c *CPU) Op_Fx29(op_code uint16) {}
+func (c *CPU) Op_Fx29(op_code uint16) {
+	c.PC += uint16(2)
+}
 
 func (c *CPU) Op_Fx33(op_code uint16) {
 	x := c.register[(op_code&0x0f00)>>8]
