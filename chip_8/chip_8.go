@@ -112,7 +112,6 @@ func (c *CPU) RunCPU(sig chan Signal) {
 			fmt.Printf("Opcode: %#x not implemented.\n", code)
 		}
 	}
-	fmt.Println(c.PC, c.sp, c.stack, c.register, c.I)
 }
 
 // Op_codes w/ the highest bits == 0x0
@@ -306,16 +305,23 @@ func (c *CPU) Op_Dxyn(op_code uint16, sig chan Signal) {
 	// var pixel uint8
 	// x := c.register[(op_code>>8)&0xF]
 	// y := c.register[(op_code>>4)&0xF]
-	// fmt.Printf("%#X\n", op_code)
 	// height := op_code & 0x000F
+	msg := Signal{}
 	// display bite at memory location I with coordinates register[x], register[y]
 	// set register[0xF] to 1 if pixels are erased
 	// c.register[0xF] = 0
 	// for yline := uint8(0); yline < uint8(height); yline++ {
 	// 	pixel := uint8(c.memory[c.I+uint16(yline)])
-	// 	fmt.Printf("%#X\n", pixel)
+	// 	for xline := 0; xline < 8; xline++ {
+	// 		if pixel&(0x80>>xline) != 0 {
+
+	// 		}
+	// 	}
 	// }
-	msg := Signal{"draw", 0, 0, []uint8{}}
+	msg.Msg = "draw"
+	msg.Xcoord = uint8(0)
+	msg.Ycoord = uint8(0)
+	msg.Bytes = []uint8{}
 	sig <- msg
 	c.PC += uint16(2)
 }
