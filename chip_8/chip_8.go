@@ -125,12 +125,14 @@ func (c *CPU) Op_00E0(op_code uint16, sig chan Signal) {
 func (c *CPU) Op_00EE(op_code uint16) {
 	c.PC = c.stack[uint16(c.sp)]
 	c.sp -= uint8(1)
+	c.PC += uint16(2)
 }
 
 // Op_code w/ the highest bits == 0x1
 func (c *CPU) Op_1nnn(op_code uint16) {
 	nnn := op_code & 0xfff
 	c.PC = nnn
+	c.PC += uint16(2)
 }
 
 // Op_code w/ the highest bits == 0x2
@@ -139,6 +141,7 @@ func (c *CPU) Op_2nnn(op_code uint16) {
 	c.sp += uint8(1)
 	c.stack[uint16(c.sp)] = c.PC
 	c.PC = nnn
+	c.PC += uint16(2)
 }
 
 // Op_code w/ the highest bits == 0x3
@@ -303,8 +306,8 @@ func (c *CPU) Op_Cxkk(op_code uint16) {
 
 func (c *CPU) Op_Dxyn(op_code uint16, sig chan Signal) {
 	// var pixel uint8
-	// x := c.register[(op_code>>8)&0xF]
-	// y := c.register[(op_code>>4)&0xF]
+	x := c.register[(op_code>>8)&0xF]
+	y := c.register[(op_code>>4)&0xF]
 	// height := op_code & 0x000F
 	msg := Signal{}
 	// display bite at memory location I with coordinates register[x], register[y]
@@ -319,8 +322,8 @@ func (c *CPU) Op_Dxyn(op_code uint16, sig chan Signal) {
 	// 	}
 	// }
 	msg.Msg = "draw"
-	msg.Xcoord = uint8(0)
-	msg.Ycoord = uint8(0)
+	msg.Xcoord = x
+	msg.Ycoord = y
 	msg.Bytes = []uint8{}
 	sig <- msg
 	c.PC += uint16(2)
