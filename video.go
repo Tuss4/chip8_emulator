@@ -43,7 +43,7 @@ func (v *Video) Initialize(sig chan chip_8.Signal) {
 		msg := <-sig
 		switch {
 		case msg.Msg == "draw":
-			v.Draw(msg.Xcoord, msg.Ycoord)
+			v.Draw(msg.Xcoord, msg.Ycoord, msg.Bytes)
 			fmt.Println(msg.Bytes)
 			sdl.Delay(3000)
 		case msg.Msg == "clear":
@@ -63,7 +63,7 @@ func (v *Video) SetTitle(title string) {
 	v.title = title
 }
 
-func (v *Video) Draw(x, y uint8) {
+func (v *Video) Draw(x, y uint8, sprite []uint8) {
 	v.the_renderer.Clear()
 	rect := sdl.Rect{int32(x), int32(y), 1, 1}
 	v.the_renderer.DrawRect(&rect)
