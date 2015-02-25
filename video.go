@@ -3,6 +3,7 @@
 package main
 
 import (
+	"fmt"
 	"github.com/tuss4/chip8_emulator/chip_8"
 	"github.com/veandco/go-sdl2/sdl"
 	"log"
@@ -43,6 +44,7 @@ func (v *Video) Initialize(sig chan chip_8.Signal) {
 		switch {
 		case msg.Msg == "draw":
 			v.Draw(msg.Xcoord, msg.Ycoord)
+			fmt.Println(msg.Bytes)
 			sdl.Delay(3000)
 		case msg.Msg == "clear":
 			v.Clear()

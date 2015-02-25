@@ -324,26 +324,18 @@ func (c *CPU) Op_Cxkk(op_code uint16) {
 }
 
 func (c *CPU) Op_Dxyn(op_code uint16, sig chan Signal) {
-	// var pixel uint8
 	x := c.register[(op_code>>8)&0xF]
 	y := c.register[(op_code>>4)&0xF]
-	// height := op_code & 0x000F
+	height := op_code & 0x000F
 	msg := Signal{}
-	// display bite at memory location I with coordinates register[x], register[y]
-	// set register[0xF] to 1 if pixels are erased
-	// c.register[0xF] = 0
-	// for yline := uint8(0); yline < uint8(height); yline++ {
-	// 	pixel := uint8(c.memory[c.I+uint16(yline)])
-	// 	for xline := 0; xline < 8; xline++ {
-	// 		if pixel&(0x80>>xline) != 0 {
-
-	// 		}
-	// 	}
-	// }
+	var gfx = make([]uint8, height)
+	for yline := uint16(0); yline < height; yline++ {
+		gfx[yline] = c.memory[c.I+yline]
+	}
 	msg.Msg = "draw"
 	msg.Xcoord = x
 	msg.Ycoord = y
-	msg.Bytes = []uint8{}
+	msg.Bytes = gfx
 	sig <- msg
 	c.PC += uint16(2)
 }
