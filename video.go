@@ -70,16 +70,22 @@ func (v *Video) Draw(x, y uint8, sprite []uint8) {
 	fmt.Println(x, y)
 	v.the_renderer.Clear()
 	height := len(sprite)
-	// rects := make([]Row, height)
-	row := make([]sdl.Rect, 8)
+	all_points := make([]Row, height)
 	for yline := uint8(0); yline < uint8(height); yline++ {
+		row := make([]sdl.Rect, 8)
 		for xline := uint8(0); xline < 8; xline++ {
-			// fmt.Println(xline, yline)
 			rect := sdl.Rect{int32(x + xline), int32(y + yline), 1, 1}
 			row[xline] = rect
 		}
+		all_points[yline].pixels = row
 	}
-	fmt.Println(row)
+	fmt.Println(all_points)
+	for _, row := range all_points {
+		v.the_renderer.SetDrawColor(255, 255, 255, 0)
+		v.the_renderer.DrawRects(row.pixels)
+		v.the_renderer.FillRects(row.pixels)
+		v.the_renderer.Present()
+	}
 }
 
 func (v *Video) Clear() {
