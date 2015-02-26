@@ -23,7 +23,6 @@ type Row struct {
 func (v *Video) Initialize(sig chan chip_8.Signal) {
 	sdl.Init(sdl.INIT_EVERYTHING)
 
-	defer sdl.Quit()
 	window, err := sdl.CreateWindow(v.title, sdl.WINDOWPOS_UNDEFINED, sdl.WINDOWPOS_UNDEFINED,
 		v.width, v.height, sdl.WINDOW_SHOWN)
 
@@ -34,7 +33,7 @@ func (v *Video) Initialize(sig chan chip_8.Signal) {
 	}
 	defer v.the_screen.Destroy()
 
-	renderer, r_err := sdl.CreateRenderer(v.the_screen, 1, sdl.RENDERER_ACCELERATED)
+	renderer, r_err := sdl.CreateRenderer(v.the_screen, -1, sdl.RENDERER_ACCELERATED)
 	v.the_renderer = renderer
 	if r_err != nil {
 		log.Fatal(sdl.GetError())
@@ -51,8 +50,6 @@ func (v *Video) Initialize(sig chan chip_8.Signal) {
 			v.Clear()
 		}
 	}
-	sdl.Delay(3000)
-	return
 }
 
 func (v *Video) SetWidthHeight(w, h int) {
