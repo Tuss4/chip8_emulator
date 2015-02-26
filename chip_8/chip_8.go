@@ -168,6 +168,8 @@ func (c *CPU) Op_3xkk(op_code uint16) {
 	kk := op_code & 0xff
 	if uint16(c.register[x]) == kk {
 		c.PC += uint16(2)
+	} else {
+		c.PC += uint16(2)
 	}
 }
 
@@ -177,6 +179,8 @@ func (c *CPU) Op_4xkk(op_code uint16) {
 	kk := op_code & 0xff
 	if uint16(c.register[x]) != kk {
 		c.PC += uint16(2)
+	} else {
+		c.PC += uint16(2)
 	}
 }
 
@@ -185,6 +189,8 @@ func (c *CPU) Op_5xy0(op_code uint16) {
 	x := (op_code >> 8) & 0xf
 	y := (op_code >> 4) & 0xf
 	if c.register[x] == c.register[y] {
+		c.PC += uint16(2)
+	} else {
 		c.PC += uint16(2)
 	}
 }
@@ -297,6 +303,8 @@ func (c *CPU) Op_9xy0(op_code uint16) {
 	x := (op_code >> 8) & 0xF
 	y := (op_code >> 4) & 0xF
 	if c.register[x] != c.register[y] {
+		c.PC += uint16(2)
+	} else {
 		c.PC += uint16(2)
 	}
 }
