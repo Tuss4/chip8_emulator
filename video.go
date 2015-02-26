@@ -16,6 +16,10 @@ type Video struct {
 	the_renderer  *sdl.Renderer
 }
 
+type Row struct {
+	pixels []sdl.Rect
+}
+
 func (v *Video) Initialize(sig chan chip_8.Signal) {
 	sdl.Init(sdl.INIT_EVERYTHING)
 
@@ -44,7 +48,6 @@ func (v *Video) Initialize(sig chan chip_8.Signal) {
 		switch {
 		case msg.Msg == "draw":
 			v.Draw(msg.Xcoord, msg.Ycoord, msg.Bytes)
-			fmt.Println(msg.Bytes)
 			sdl.Delay(3000)
 		case msg.Msg == "clear":
 			v.Clear()
@@ -64,12 +67,19 @@ func (v *Video) SetTitle(title string) {
 }
 
 func (v *Video) Draw(x, y uint8, sprite []uint8) {
+	fmt.Println(x, y)
 	v.the_renderer.Clear()
-	rect := sdl.Rect{int32(x), int32(y), 1, 1}
-	v.the_renderer.DrawRect(&rect)
-	v.the_renderer.SetDrawColor(255, 255, 255, 0)
-	v.the_renderer.FillRect(&rect)
-	v.the_renderer.Present()
+	height := len(sprite)
+	// rects := make([]Row, height)
+	row := make([]sdl.Rect, 8)
+	for yline := uint8(0); yline < uint8(height); yline++ {
+		for xline := uint8(0); xline < 8; xline++ {
+			// fmt.Println(xline, yline)
+			rect := sdl.Rect{int32(x + xline), int32(y + yline), 1, 1}
+			row[xline] = rect
+		}
+	}
+	fmt.Println(row)
 }
 
 func (v *Video) Clear() {

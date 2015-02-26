@@ -6,7 +6,7 @@ package chip_8
 // http://www.multigesture.net/articles/how-to-write-an-emulator-chip-8-interpreter/
 
 import (
-	"fmt"
+	// "fmt"
 	"math/rand"
 )
 
@@ -24,8 +24,9 @@ type CPU struct {
 	I        uint16
 	PC       uint16
 	sp       uint8
-	DT       uint8 // Delay Timer
-	ST       uint8 // Sound Timer
+	DT       uint8          // Delay Timer
+	ST       uint8          // Sound Timer
+	gfx      [64 * 32]uint8 // Helps to keep track of pixels on the screen
 }
 
 // To look at the highest bits >> 12
@@ -127,8 +128,6 @@ func (c *CPU) RunCPU(sig chan Signal) {
 			case (code & 0x00FF) == 0x33:
 				c.Op_Fx33(code)
 			}
-		default:
-			fmt.Printf("Opcode: %#x not implemented.\n", code)
 		}
 	}
 }
@@ -324,13 +323,23 @@ func (c *CPU) Op_Cxkk(op_code uint16) {
 }
 
 func (c *CPU) Op_Dxyn(op_code uint16, sig chan Signal) {
+	pixel := uint8(0)
 	x := c.register[(op_code>>8)&0xF]
 	y := c.register[(op_code>>4)&0xF]
 	height := op_code & 0x000F
 	msg := Signal{}
+	c.register[0xF] = uint8(0)
 	var gfx = make([]uint8, height)
-	for yline := uint16(0); yline < height; yline++ {
-		gfx[yline] = c.memory[c.I+yline]
+
+	for yline := uint8(0); yline < uint8(height); yline++ {
+		pixel = c.memory[c.I+uint16(yline)]
+		for xline := uint8(0); xline < 8; xline++ {
+			if c.gfx[x+xline+((y+yline)*64)] == 1 {
+				c.register[0xF] = 1
+			}
+			c.gfx[x+xline+((y+yline)*64)] ^= 1
+		}
+		gfx[yline] = pixel
 	}
 	msg.Msg = "draw"
 	msg.Xcoord = x
