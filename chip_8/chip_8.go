@@ -334,10 +334,12 @@ func (c *CPU) Op_Dxyn(op_code uint16, sig chan Signal) {
 	for yline := uint8(0); yline < uint8(height); yline++ {
 		pixel = c.memory[c.I+uint16(yline)]
 		for xline := uint8(0); xline < 8; xline++ {
-			if c.gfx[x+xline+((y+yline)*64)] == 1 {
-				c.register[0xF] = 1
+			if pixel&(0x80>>xline) != 0 {
+				if c.gfx[x+xline+((y+yline)*64)] == 1 {
+					c.register[0xF] = 1
+				}
+				c.gfx[x+xline+((y+yline)*64)] ^= 1
 			}
-			c.gfx[x+xline+((y+yline)*64)] ^= 1
 		}
 		gfx[yline] = pixel
 	}

@@ -25,7 +25,7 @@ func (v *Video) Initialize(sig chan chip_8.Signal) {
 
 	defer sdl.Quit()
 	window, err := sdl.CreateWindow(v.title, sdl.WINDOWPOS_UNDEFINED, sdl.WINDOWPOS_UNDEFINED,
-		v.width, v.height, sdl.WINDOW_SHOWN)
+		v.width, v.height, sdl.WINDOW_RESIZABLE)
 
 	v.the_screen = window
 
@@ -39,7 +39,6 @@ func (v *Video) Initialize(sig chan chip_8.Signal) {
 	if r_err != nil {
 		log.Fatal(sdl.GetError())
 	}
-	v.the_renderer.Clear()
 	v.the_renderer.SetDrawColor(0, 0, 0, 0)
 	v.the_renderer.Present()
 	defer v.the_renderer.Destroy()
@@ -48,7 +47,6 @@ func (v *Video) Initialize(sig chan chip_8.Signal) {
 		switch {
 		case msg.Msg == "draw":
 			v.Draw(msg.Xcoord, msg.Ycoord, msg.Bytes)
-			sdl.Delay(3000)
 		case msg.Msg == "clear":
 			v.Clear()
 		}
@@ -67,15 +65,16 @@ func (v *Video) SetTitle(title string) {
 }
 
 func (v *Video) Draw(x, y uint8, sprite []uint8) {
-	fmt.Println(x, y)
-	v.the_renderer.Clear()
 	height := len(sprite)
 	all_points := make([]Row, height)
 	for yline := uint8(0); yline < uint8(height); yline++ {
+		sprite_row := sprite[yline]
 		row := make([]sdl.Rect, 8)
 		for xline := uint8(0); xline < 8; xline++ {
-			rect := sdl.Rect{int32(x + xline), int32(y + yline), 1, 1}
-			row[xline] = rect
+			if sprite_row&(0x80>>xline) != 0 {
+				rect := sdl.Rect{int32(x + xline), int32(y + yline), 1, 1}
+				row[xline] = rect
+			}
 		}
 		all_points[yline].pixels = row
 	}
