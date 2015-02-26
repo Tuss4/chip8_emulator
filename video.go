@@ -3,7 +3,7 @@
 package main
 
 import (
-	"fmt"
+	// "fmt"
 	"github.com/tuss4/chip8_emulator/chip_8"
 	"github.com/veandco/go-sdl2/sdl"
 	"log"
@@ -25,7 +25,7 @@ func (v *Video) Initialize(sig chan chip_8.Signal) {
 
 	defer sdl.Quit()
 	window, err := sdl.CreateWindow(v.title, sdl.WINDOWPOS_UNDEFINED, sdl.WINDOWPOS_UNDEFINED,
-		v.width, v.height, sdl.WINDOW_RESIZABLE)
+		v.width, v.height, sdl.WINDOW_SHOWN)
 
 	v.the_screen = window
 
@@ -78,9 +78,9 @@ func (v *Video) Draw(x, y uint8, sprite []uint8) {
 		}
 		all_points[yline].pixels = row
 	}
-	fmt.Println(all_points)
+
+	v.the_renderer.SetDrawColor(255, 255, 255, 0)
 	for _, row := range all_points {
-		v.the_renderer.SetDrawColor(255, 255, 255, 0)
 		v.the_renderer.DrawRects(row.pixels)
 		v.the_renderer.FillRects(row.pixels)
 		v.the_renderer.Present()
