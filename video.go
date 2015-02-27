@@ -3,10 +3,11 @@
 package main
 
 import (
-	// "fmt"
+	"fmt"
 	"github.com/tuss4/chip8_emulator/chip_8"
 	"github.com/veandco/go-sdl2/sdl"
 	"log"
+	"os"
 )
 
 type Video struct {
@@ -21,33 +22,44 @@ type Row struct {
 }
 
 func (v *Video) Initialize(sig chan chip_8.Signal) {
-	sdl.Init(sdl.INIT_EVERYTHING)
-
-	window, err := sdl.CreateWindow(v.title, sdl.WINDOWPOS_UNDEFINED, sdl.WINDOWPOS_UNDEFINED,
+	var err error
+	var running bool
+	var event sdl.Event
+	v.the_screen, err = sdl.CreateWindow(v.title, sdl.WINDOWPOS_UNDEFINED, sdl.WINDOWPOS_UNDEFINED,
 		v.width, v.height, sdl.WINDOW_SHOWN)
-
-	v.the_screen = window
 
 	if err != nil {
 		log.Fatal(sdl.GetError())
+		os.Exit(1)
 	}
 	defer v.the_screen.Destroy()
 
-	renderer, r_err := sdl.CreateRenderer(v.the_screen, -1, sdl.RENDERER_ACCELERATED)
-	v.the_renderer = renderer
-	if r_err != nil {
+	v.the_renderer, err = sdl.CreateRenderer(v.the_screen, -1, sdl.RENDERER_ACCELERATED)
+	if err != nil {
 		log.Fatal(sdl.GetError())
+		os.Exit(2)
 	}
-	v.the_renderer.SetDrawColor(0, 0, 0, 0)
-	v.the_renderer.Present()
 	defer v.the_renderer.Destroy()
-	for {
-		msg := <-sig
-		switch {
-		case msg.Msg == "draw":
-			v.Draw(msg.Xcoord, msg.Ycoord, msg.Bytes)
-		case msg.Msg == "clear":
-			v.Clear()
+	running = true
+	for running {
+		v.the_renderer.SetDrawColor(0, 0, 0, 0)
+		v.the_renderer.Present()
+		for event = sdl.PollEvent(); event != nil; event = sdl.PollEvent() {
+			switch t := event.(type) {
+			case *sdl.QuitEvent:
+				running = false
+			default:
+				fmt.Printf("%t\n", t)
+			}
+			// for {
+			// 	msg := <-sig
+			// 	switch {
+			// 	case msg.Msg == "draw":
+			// 		v.Draw(msg.Xcoord, msg.Ycoord, msg.Bytes)
+			// 	case msg.Msg == "clear":
+			// 		v.Clear()
+			// 	}
+			// }
 		}
 	}
 }
@@ -80,8 +92,8 @@ func (v *Video) Draw(x, y uint8, sprite []uint8) {
 	for _, row := range all_points {
 		v.the_renderer.DrawRects(row.pixels)
 		v.the_renderer.FillRects(row.pixels)
-		v.the_renderer.Present()
 	}
+	v.the_renderer.Present()
 }
 
 func (v *Video) Clear() {
