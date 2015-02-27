@@ -8,8 +8,9 @@ var t_c CPU
 func TestOp_00EE(t *testing.T) {
 	code := uint16(0x00EE)
 	old_sp := t_c.sp
+	old_pc := t_c.PC
 	t_c.Op_00EE(code)
-	if t_c.PC != t_c.stack[uint16(t_c.sp+uint8(1))] {
+	if t_c.PC != old_pc+uint16(2) {
 		t.Error(COUNTER_VAL_ERROR)
 	}
 	if t_c.sp != old_sp-uint8(1) {
@@ -22,7 +23,7 @@ func TestOp_1nnn(t *testing.T) {
 	low_bits := code & 0xfff
 	t_c.Op_1nnn(code)
 	// PC should be equal to low_bits
-	if t_c.PC != low_bits {
+	if t_c.PC != low_bits+uint16(2) {
 		t.Error(COUNTER_VAL_ERROR)
 	}
 }
@@ -33,7 +34,7 @@ func TestOp_2nnn(t *testing.T) {
 	low_bits := code & 0xfff
 	t_c.Op_2nnn(code)
 	// PC should be equal to low_bits
-	if t_c.PC != low_bits {
+	if t_c.PC != low_bits+uint16(2) {
 		t.Error(COUNTER_VAL_ERROR)
 	}
 	if t_c.sp != old_sp+uint8(1) {
@@ -61,7 +62,7 @@ func TestOp_4xkk(t *testing.T) {
 	old_PC := t_c.PC
 	t_c.Op_4xkk(code)
 	if uint16(t_c.register[x_bits]) != kk {
-		if t_c.PC != old_PC+uint16(2) {
+		if t_c.PC != old_PC+uint16(4) {
 			t.Error(COUNTER_VAL_ERROR)
 		}
 	}
@@ -74,7 +75,7 @@ func TestOp_5xy0(t *testing.T) {
 	old_PC := t_c.PC
 	t_c.Op_5xy0(code)
 	if t_c.register[x] == t_c.register[y] {
-		if t_c.PC != old_PC+uint16(2) {
+		if t_c.PC != old_PC+uint16(4) {
 			t.Error(COUNTER_VAL_ERROR)
 		}
 	}
