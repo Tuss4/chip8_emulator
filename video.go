@@ -44,6 +44,13 @@ func (v *Video) Initialize(sig chan chip_8.Signal) {
 	for running {
 		v.the_renderer.SetDrawColor(0, 0, 0, 0)
 		v.the_renderer.Present()
+		// msg := <-sig
+		// switch {
+		// case msg.Msg == "draw":
+		// 	v.Draw(msg.Xcoord, msg.Ycoord, msg.Bytes)
+		// case msg.Msg == "clear":
+		// 	v.Clear()
+		// }
 		for event = sdl.PollEvent(); event != nil; event = sdl.PollEvent() {
 			switch t := event.(type) {
 			case *sdl.QuitEvent:
@@ -51,15 +58,6 @@ func (v *Video) Initialize(sig chan chip_8.Signal) {
 			default:
 				fmt.Printf("%t\n", t)
 			}
-			// for {
-			// 	msg := <-sig
-			// 	switch {
-			// 	case msg.Msg == "draw":
-			// 		v.Draw(msg.Xcoord, msg.Ycoord, msg.Bytes)
-			// 	case msg.Msg == "clear":
-			// 		v.Clear()
-			// 	}
-			// }
 		}
 	}
 }
@@ -74,6 +72,7 @@ func (v *Video) SetTitle(title string) {
 }
 
 func (v *Video) Draw(x, y uint8, sprite []uint8) {
+	v.Clear()
 	height := len(sprite)
 	all_points := make([]Row, height)
 	for yline := uint8(0); yline < uint8(height); yline++ {
@@ -99,5 +98,5 @@ func (v *Video) Draw(x, y uint8, sprite []uint8) {
 func (v *Video) Clear() {
 	v.the_renderer.Clear()
 	v.the_renderer.SetDrawColor(0, 0, 0, 0)
-	v.the_renderer.Present()
+	// v.the_renderer.Present()
 }
